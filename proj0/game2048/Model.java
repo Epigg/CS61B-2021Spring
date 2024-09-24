@@ -5,7 +5,7 @@ import java.util.Observable;
 
 
 /** The state of a game of 2048.
- *  @author TODO: YOUR NAME HERE
+ *  @author Epigg
  */
 public class Model extends Observable {
     /** Current contents of the board. */
@@ -110,7 +110,9 @@ public class Model extends Observable {
         boolean changed;
         changed = false;
 
-        // TODO: Modify this.board (and perhaps this.score) to account
+        board.setViewingPerspective(side);
+        changed = upOnly();
+        board.setViewingPerspective(Side.NORTH);
         // for the tilt to the Side SIDE. If the board changed, set the
         // changed local variable to true.
 
@@ -120,6 +122,44 @@ public class Model extends Observable {
         }
         return changed;
     }
+
+    private boolean upOnly() {
+        boolean changed = false;
+        for (int col = 0; col < board.size(); col += 1) {
+            if(upOneCol(col)) {
+                changed = true;
+            }
+        }
+        return changed;
+    }
+
+    private boolean upOneCol (int col) {
+        boolean changed = false;
+        int frontRow = board.size() - 1; // 初始设定前一个Tile位置
+
+        for (int row = board.size() - 2; row >= 0; row -= 1) { // 从第二远的位置开始
+            Tile tile = board.tile(col, row);
+            if (tile == null) { // 如果该位置为null
+                continue;
+            } else if (board.tile(col, frontRow) == null) { // 如果前一个Tile为null
+                board.move(col, frontRow, tile);
+                changed = true;
+            } else if (board.tile(col, frontRow).value() == tile.value()) { // 如果value和前一个Tile相等
+                board.move(col, frontRow, tile);
+                score += board.tile(col, frontRow).value();
+                frontRow -= 1; // 不能重复merge
+                changed = true;
+            } else { // 如果value不相等
+                frontRow -= 1;
+                if (row != frontRow) { // 如果不相邻
+                    board.move(col, frontRow, tile);
+                    changed = true;
+                }
+            }
+        }
+        return changed;
+    }
+
 
     /** Checks if the game is over and sets the gameOver variable
      *  appropriately.
@@ -137,7 +177,13 @@ public class Model extends Observable {
      *  Empty spaces are stored as null.
      * */
     public static boolean emptySpaceExists(Board b) {
-        // TODO: Fill in this function.
+        for (int col = 0; col < b.size(); col += 1) {
+            for (int row = 0; row < b.size(); row += 1) {
+                if (b.tile(col, row) == null) {
+                    return true;
+                }
+            }
+        }
         return false;
     }
 
@@ -147,7 +193,17 @@ public class Model extends Observable {
      * given a Tile object t, we get its value with t.value().
      */
     public static boolean maxTileExists(Board b) {
-        // TODO: Fill in this function.
+        for (int col = 0; col < b.size(); col += 1) {
+            for (int row = 0; row < b.size(); row += 1) {
+                Tile t = b.tile(col, row);
+                if (t == null) {
+                    continue;
+                }
+                if (t.value() == MAX_PIECE) {
+                    return true;
+                }
+            }
+        }
         return false;
     }
 
@@ -158,8 +214,47 @@ public class Model extends Observable {
      * 2. There are two adjacent tiles with the same value.
      */
     public static boolean atLeastOneMoveExists(Board b) {
-        // TODO: Fill in this function.
+        if (emptySpaceExists(b)) {
+            return true;
+        }
+        for (int col = 0; col < b.size(); col += 1) {
+            for (int row = 0; row < b.size(); row += 1) {
+                Tile tile = b.tile(col, row);
+                for (Tile neighbor: getNeighbors(b, col, row)) {
+                    if (tile.value() == neighbor.value()) {
+                        return true;
+                    }
+                }
+            }
+        }
         return false;
+    }
+
+    /** 返回 true 如果 0 <= ROW < size() && 0 <= COL < size(). */
+    private static boolean isIndexValid(Board b, int col, int row) {
+        return col >= 0 && col < b.size() && row >= 0 && row < b.size();
+    }
+
+    /** 返回 b.tile(col, row) 的邻居构成的数组 */
+    private static Tile[] getNeighbors(Board b, int col, int row) {
+        Tile[] tempNeighbors = new Tile[4];
+        int cnt = 0;
+        int[][] pos = new int[][]{{0, 1}, {0, -1}, {1, 0}, {-1, 0}}; // size: 4 * 2
+        for (int i = 0; i < 4; i += 1) {
+            int neighborCol = col + pos[i][0];
+            int neighborRow = row + pos[i][1];
+            if (isIndexValid(b, neighborCol, neighborRow)) {
+                Tile neighbor = b.tile(neighborCol, neighborRow);
+                tempNeighbors[cnt] = neighbor;
+                cnt += 1;
+            }
+        }
+
+        Tile[] neighbors = new Tile[cnt];
+        for (int i = 0; i < cnt; i++) {
+            neighbors[i] = tempNeighbors[i];
+        }
+        return neighbors;
     }
 
 
