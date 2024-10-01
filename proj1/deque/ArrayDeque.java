@@ -10,35 +10,39 @@ public class ArrayDeque<Item> {
     public ArrayDeque() {
         items = (Item[]) new Object[8];
         size = 0;
-        head = 0; // index before the front of the deque
-        tail = 1; // index after the back of the deque
+        head = items.length - 1; // index before the front of the deque
+        tail = 0; // index after the back of the deque
     }
 
     private void resize(int newSize) {
         Item[] newItems = (Item[]) new Object[newSize];
-        if (head < tail) {
-            System.arraycopy(items, head + 1, newItems, 1, size);
+        if (head >= tail - 1) {
+            System.arraycopy(items, head + 1, newItems, 0, items.length - 1 - head);
+            System.arraycopy(items, 0, newItems, items.length - 1 - head, size - (items.length - 1 - head));
         } else {
-            System.arraycopy(items, head + 1, newItems, 1, items.length - 1 - head);
-            System.arraycopy(items, 0, newItems, items.length - head, size - (items.length - 1 - head));
+            System.arraycopy(items, head + 1, newItems, 1, size);
         }
-        head = 0;
-        tail = size + 1;
+        head = newItems.length - 1;
+        tail = size;
         items = newItems;
     }
     /** Adds an item(not null) to the front of the deque. */
     public void addFirst(Item item) {
-        if (head == tail) {
+        if (size == items.length) {
             resize(items.length * 2);
         }
         items[head] = item;
         size += 1;
-        head = (head - 1) % items.length;
+
+        /** "head = (head - 1) % items.length;" is not correct
+         * as "-1 % items.length == -1" not "items.length - 1".
+         */
+        head = (head + items.length - 1) % items.length;
     }
 
     /** Adds an item(not null) to the back of the deque. */
     public void addLast(Item item) {
-        if (head == tail) {
+        if (size == items.length) {
             resize(items.length * 2);
         }
         items[tail] = item;
@@ -89,7 +93,7 @@ public class ArrayDeque<Item> {
         } else if (size < items.length / 4 && size > 4) {
             resize(items.length / 2);
         }
-        tail = (tail - 1) % items.length;
+        tail = (tail + items.length - 1) % items.length;
         Item ret = items[tail];
         items[tail] = null;
         size -= 1;
