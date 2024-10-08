@@ -19,11 +19,13 @@ public class ArrayDeque<T> implements Deque<T>, Iterable<T> {
     /** Resize the length of items to the newSize and the front is at index 0. */
     private void resize(int newSize) {
         T[] newItems = (T[]) new Object[newSize];
-        if (head >= tail - 1) {
-            System.arraycopy(items, head + 1, newItems, 0, items.length - 1 - head);
-            System.arraycopy(items, 0, newItems, items.length - 1 - head, tail);
+        int firstIndex = (head + 1) % items.length;
+        int lastIndex = (tail + items.length - 1) % items.length;
+        if (firstIndex > lastIndex) {
+            System.arraycopy(items, firstIndex, newItems, 0, items.length - firstIndex);
+            System.arraycopy(items, 0, newItems, items.length - firstIndex, lastIndex + 1);
         } else {
-            System.arraycopy(items, head + 1, newItems, 0, size);
+            System.arraycopy(items, firstIndex, newItems, 0, size);
         }
         head = newItems.length - 1;
         tail = size;
