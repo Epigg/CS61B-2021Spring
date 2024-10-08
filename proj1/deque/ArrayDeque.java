@@ -20,8 +20,10 @@ public class ArrayDeque<T> implements Deque<T> {
     private void resize(int newSize) {
         T[] newItems = (T[]) new Object[newSize];
         if (head >= tail - 1) {
-            System.arraycopy(items, head + 1, newItems, 0, items.length - 1 - head);
-            System.arraycopy(items, 0, newItems, items.length - 1 - head, size - (items.length - 1 - head));
+            System.arraycopy(items, head + 1, newItems, 0,
+                    items.length - 1 - head);
+            System.arraycopy(items, 0, newItems, items.length - 1 - head,
+                    size - (items.length - 1 - head));
         } else {
             System.arraycopy(items, head + 1, newItems, 1, size);
         }
@@ -121,9 +123,15 @@ public class ArrayDeque<T> implements Deque<T> {
 
     private class ArrayDequeIterator implements Iterator<T> {
         private int index;
-        public ArrayDequeIterator() {
+
+        /* Style: the public modifier here is redundant as members of a private nested
+         * class in Java do not need (and cannot have) the public modifier.
+         */
+
+        ArrayDequeIterator() {
             index = 0;
         }
+
         @Override
         public boolean hasNext() {
             return index < size;
@@ -140,7 +148,7 @@ public class ArrayDeque<T> implements Deque<T> {
     public boolean equals(Object o) {
         if (o == null) {
             return false;
-        }else if (o == this) {
+        } else if (o == this) {
             return true;
         } else if (o.getClass() != this.getClass()) {
             return false;
@@ -149,8 +157,8 @@ public class ArrayDeque<T> implements Deque<T> {
         if (other.size != this.size) {
             return false;
         }
-        for (int i = 0; i < size; i += 1){
-            if(other.get(i) != this.get(i)){
+        for (int i = 0; i < size; i += 1) {
+            if (other.get(i) != this.get(i)) {
                 return false;
             }
         }

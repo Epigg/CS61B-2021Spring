@@ -5,11 +5,12 @@ import java.util.Iterator;
 public class LinkedListDeque<T> implements Deque<T> {
     /** Define class LinkedList */
     private class LinkedList {
-        public T item;
-        public LinkedList next;
-        public LinkedList prev;
+        // Here use private modifier rather than public.
+        private T item;
+        private LinkedList next;
+        private LinkedList prev;
 
-        public LinkedList(T item, LinkedList next, LinkedList prev) {
+        LinkedList(T item, LinkedList next, LinkedList prev) {
             this.item = item;
             this.next = next;
             this.prev = prev;
@@ -132,9 +133,11 @@ public class LinkedListDeque<T> implements Deque<T> {
 
     private class LinkedDequeIterator implements Iterator<T> {
         private int index;
-        public LinkedDequeIterator() {
+
+        LinkedDequeIterator() {
             index = 0;
         }
+
         @Override
         public boolean hasNext() {
             return index < size;
@@ -151,7 +154,7 @@ public class LinkedListDeque<T> implements Deque<T> {
     public boolean equals(Object o) {
         if (o == null) {
             return false;
-        }else if (o == this) {
+        } else if (o == this) {
             return true;
         } else if (o.getClass() != this.getClass()) {
             return false;
@@ -160,8 +163,8 @@ public class LinkedListDeque<T> implements Deque<T> {
         if (other.size != this.size) {
             return false;
         }
-        for (int i = 0; i < size; i += 1){
-            if(other.get(i) != this.get(i)){
+        for (int i = 0; i < size; i += 1) {
+            if(other.get(i) != this.get(i)) {
                 return false;
             }
         }
