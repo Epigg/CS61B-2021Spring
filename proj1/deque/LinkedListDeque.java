@@ -156,15 +156,19 @@ public class LinkedListDeque<T> implements Deque<T> {
             return false;
         } else if (o == this) {
             return true;
-        } else if (o.getClass() != this.getClass()) {
+        } else if (!(o instanceof Deque)) {
+            // Condition "o.getClass() != this.getClass()" is incomplete.
             return false;
         }
-        LinkedListDeque<T> other = (LinkedListDeque<T>) o;
-        if (other.size != this.size) {
+
+        // Use "Deque" so that this can compare to AD
+        Deque<T> other = (Deque<T>) o;
+        if (other.size() != this.size) {
             return false;
         }
         for (int i = 0; i < size; i += 1) {
-            if(other.get(i) != this.get(i)) {
+            // Pay attention to not use '!=' !
+            if(other.get(i).equals(this.get(i))) {
                 return false;
             }
         }

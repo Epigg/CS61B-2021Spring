@@ -20,12 +20,10 @@ public class ArrayDeque<T> implements Deque<T> {
     private void resize(int newSize) {
         T[] newItems = (T[]) new Object[newSize];
         if (head >= tail - 1) {
-            System.arraycopy(items, head + 1, newItems, 0,
-                    items.length - 1 - head);
-            System.arraycopy(items, 0, newItems, items.length - 1 - head,
-                    size - (items.length - 1 - head));
+            System.arraycopy(items, head + 1, newItems, 0, items.length - 1 - head);
+            System.arraycopy(items, 0, newItems, items.length - 1 - head, tail);
         } else {
-            System.arraycopy(items, head + 1, newItems, 1, size);
+            System.arraycopy(items, head + 1, newItems, 0, size);
         }
         head = newItems.length - 1;
         tail = size;
@@ -150,15 +148,15 @@ public class ArrayDeque<T> implements Deque<T> {
             return false;
         } else if (o == this) {
             return true;
-        } else if (o.getClass() != this.getClass()) {
+        } else if (!(o instanceof Deque)) {
             return false;
         }
-        ArrayDeque<T> other = (ArrayDeque<T>) o;
-        if (other.size != this.size) {
+        Deque<T> other = (Deque<T>) o;
+        if (other.size() != this.size) {
             return false;
         }
         for (int i = 0; i < size; i += 1) {
-            if (other.get(i) != this.get(i)) {
+            if (other.get(i).equals(this.get(i))) {
                 return false;
             }
         }
