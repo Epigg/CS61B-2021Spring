@@ -1,8 +1,6 @@
 package deque;
 
-import java.util.Iterator;
-
-public interface Deque<T> extends Iterable<T> {
+public interface Deque<T> {
     /* Style: the public modifier here is redundant since
      * Java automatically makes interface methods public.
      * */
