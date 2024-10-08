@@ -135,9 +135,11 @@ public class LinkedListDeque<T> implements Deque<T> {
         public LinkedDequeIterator() {
             index = 0;
         }
+        @Override
         public boolean hasNext() {
             return index < size;
         }
+        @Override
         public T next() {
             T retNext = get(index);
             index += 1;

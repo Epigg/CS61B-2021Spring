@@ -30,7 +30,7 @@ public class ArrayDeque<T> implements Deque<T> {
         items = newItems;
     }
 
-    /** Adds an t(not null) to the front of the deque. */
+    /** Adds an item(not null) to the front of the deque. */
     @Override
     public void addFirst(T t) {
         if (size == items.length) {
@@ -39,13 +39,12 @@ public class ArrayDeque<T> implements Deque<T> {
         items[head] = t;
         size += 1;
 
-        /** "head = (head - 1) % items.length;" is not correct
-         * as "-1 % items.length == -1" not "items.length - 1".
-         */
+        /* "head = (head - 1) % items.length;" is not correct,
+         * as "-1 % items.length == -1" not "items.length - 1". */
         head = (head + items.length - 1) % items.length;
     }
 
-    /** Adds an t(not null) to the back of the deque. */
+    /** Adds an item(not null) to the back of the deque. */
     @Override
     public void addLast(T t) {
         if (size == items.length) {
@@ -125,9 +124,11 @@ public class ArrayDeque<T> implements Deque<T> {
         public ArrayDequeIterator() {
             index = 0;
         }
+        @Override
         public boolean hasNext() {
             return index < size;
         }
+        @Override
         public T next() {
             T retNext = get(index);
             index += 1;
